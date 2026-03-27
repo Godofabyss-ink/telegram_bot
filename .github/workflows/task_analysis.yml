@@ -1,0 +1,18 @@
+name: Lesson Task Analysis
+
+on:
+  push:
+    paths:
+      - "lessons/**/homework/**"
+      - "lessons/**/tasks/**"
+
+jobs:
+  analyze:
+    permissions:
+      contents: write
+    uses: Pau1R/TOP_telegram_bot/.github/workflows/task_analysis.yml@main
+    with:
+      base_sha: ${{ github.event.before }}
+    secrets:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      TASKS_REPO_TOKEN: ${{ secrets.TASKS_REPO_TOKEN }}
