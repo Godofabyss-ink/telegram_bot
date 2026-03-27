@@ -6,7 +6,7 @@ import random
 TOKEN = '8170013712:AAGIZc_Y7rQkB34ImHvnQB03RNT52pD5we4'
 bot = telebot.TeleBot(TOKEN)
 
-# ------------------- Часть 1: Логика обработки текста ------------------- #
+# Часть 1: Логика обработки текста 
 def process_text(text):
     punctuation_chars = set(string.punctuation)
     has_punctuation = any(char in punctuation_chars for char in text)
@@ -23,15 +23,15 @@ def process_text(text):
         half_length = len(text) // 2
         return text[:half_length].upper()
 
-# ------------------  Часть 2: Морской бой (10x10) ------------------- #
-# Пример: создание поля для игры
+# Морской бой (10x10) 
+# Создание поля для игры
 def create_battlefield():
     return [['~' for _ in range(10)] for _ in range(10)]  # '~' - вода
 
 # Глобальная переменная для поля (примитивное хранение)
 battlefield = create_battlefield()
 
-# ------------------  Часть 3: Игра "Виселица" ------------------- #
+# Игра "Виселица"
 # Простая логика виселицы
 hangman_words = ['компьютер', 'программа', 'телефон', 'машина', 'книга']
 current_word = ''
@@ -81,7 +81,7 @@ def handle_help(message):
     bot.send_message(message.chat.id, help_text, parse_mode='Markdown')
 
 
-# ------------------  Игра "Морской бой" ------------------- #
+# Игра "Морской бой"
 # Обработка команды /sea_battle для начала игры
 @bot.message_handler(commands=['sea_battle'])
 def start_battle(message):
@@ -111,7 +111,7 @@ def handle_shot(message):
         bot.send_message(message.chat.id, "Пожалуйста, введите корректные числа.")
 
 
-# ------------------  Игра "Виселица" ------------------- #
+#  Игра "Виселица"
 @bot.message_handler(commands=['hangman'])
 def start_hangman_game(message):
     start_hangman()
@@ -177,7 +177,7 @@ def handle_any_message(message):
         # Нет активной игры
         pass
 
-# --------- Обработка любых сообщений для фильтров, как раньше --------- #
+# Обработка любых сообщений для фильтров, как раньше
 @bot.message_handler(func=lambda message: True)
 def handle_all_messages(message):
     original_text = message.text
@@ -193,7 +193,7 @@ def handle_all_messages(message):
     bot.send_message(message.chat.id, response, parse_mode='Markdown')
 
 
-# --------- запуск бота ---------
+# запуск бота 
 if __name__ == '__main__':
     print("Бот запущен...")
     bot.polling(none_stop=True)
