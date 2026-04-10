@@ -1,0 +1,51 @@
+import asyncio
+import logging
+
+from aiogram import Bot, Dispatcher, Router, F
+from aiogram.filters import Command, StateFilter
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import Message
+
+logging.basicConfig(level=logging.INFO)
+storage = MemoryStorage()
+bot = Bot(token="8170013712:AAGIZc_Y7rQkB34ImHvnQB03RNT52pD5we4")
+dp = Dispatcher(storage=storage)
+router = Router()
+dp.include_router(router)
+
+class HideMode(StatesGroup):
+    active = State()  
+
+# Запуск режима hide
+@router.message(Command("start_hide"))
+async def cmd_start_hide(message: Message, state: FSMContext):
+    await state.set_state(HideMode.active)
+    await message.reply("👻 Режим Hide активирован. Теперь доступна команда /hide.\n"
+                        "Для отмены отправьте /cancel")
+
+@router.message(Command("hide"), StateFilter(HideMode.active))
+async def cmd_hide(message: Message):
+    await message.reply("🙈 Вы скрыты! (или любое другое действие)")
+
+@router.message(Command("cancel"))
+@router.message(F.text.casefold() == "отмена")
+async def cmd_cancel(message: Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        await message.reply("🤷‍♂️ Нет активных действий для отмены.")
+        return
+
+    await state.clear()
+    await message.reply("❌ Режим Hide отключен. Команда /hide снова недоступна.")
+
+@router.message(Command("hide"))
+async def cmd_hide_inactive(message: Message):
+    await message.reply("⛔ Команда /hide недоступна. Сначала введите /start_hide.")
+
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
